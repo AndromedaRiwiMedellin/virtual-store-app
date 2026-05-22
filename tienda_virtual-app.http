@@ -1,6 +1,0 @@
-@tienda_virtual_app_HostAddress = http://localhost:5008
-
-GET {{tienda_virtual_app_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
