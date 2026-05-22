@@ -61,7 +61,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: 22
           script: |
-            docker login ghcr.io -u monterrosag18 -p ${{ secrets.TOKEN }}
+            docker login ghcr.io -u cadena0 -p ${{ secrets.TOKEN }}
             docker pull ${{ env.IMAGE }}:latest
 
             docker stop ${{ github.event.repository.name }} || true
