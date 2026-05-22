@@ -1,6 +1,5 @@
-﻿
 # Etapa 1: Build
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /app
 
 # Copiar csproj y restaurar dependencias
@@ -14,14 +13,14 @@ COPY . ./
 RUN dotnet publish -c Release -o /out
 
 # Etapa 2: Runtime
-FROM mcr.microsoft.com/dotnet/aspnet:10.0
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
 WORKDIR /app
 
 # Copiar desde la etapa build
 COPY --from=build /out .
 
 # Exponer puerto
-EXPOSE 80
+EXPOSE 8080
 
 # Comando de inicio
 ENTRYPOINT ["dotnet", "tienda_virtual-app.dll"]
