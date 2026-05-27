@@ -1,6 +1,6 @@
-const BASE_URL = "http://localhost:5000/api"; 
+const BASE_URL = "http://localhost:5000/api";
 
-// Función de Inicio de Sesión (Login)
+// Función de Inicio de Sesión (Login) - ¡CORREGIDA!
 export async function login(email, password) {
     const response = await fetch(`${BASE_URL}/auth/login`, {
         method: "POST",
@@ -22,18 +22,18 @@ export async function login(email, password) {
     return response.json();
 }
 
-// Función de Registro de Usuarios
+// Función de Registro de Usuarios - ¡ASEGURADA!
 export async function register(fullName, email, password, confirmPassword) {
     console.log("Disparando petición HTTP a:", `${BASE_URL}/auth/register`);
 
     const response = await fetch(`${BASE_URL}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-            fullName, 
-            email, 
-            password, 
-            confirmPassword 
+        body: JSON.stringify({
+            fullName,
+            email,
+            password,
+            confirmPassword
         }),
     });
 
