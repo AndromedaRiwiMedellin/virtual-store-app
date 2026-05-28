@@ -1,10 +1,12 @@
 export const categories = [
   'Todos',
   'Conciertos',
+  'Cine',
   'Teatro',
   'Deportes',
   'Familia',
-  'Experiencias'
+  'Experiencias',
+  'Eventos'
 ];
 
 export const cities = ['Medellin', 'Bogota', 'Cali', 'Barranquilla', 'Cartagena'];

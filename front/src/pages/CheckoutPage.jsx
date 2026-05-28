@@ -1,6 +1,6 @@
 import { Armchair, ArrowLeft, CheckCircle2, LoaderCircle, ShieldCheck, Ticket } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
-import { getEventSeats } from '../services/eventsApi.js';
+import { getEventSeats, purchaseTickets } from '../services/eventsApi.js';
 import { formatCurrency } from '../utils/formatters.js';
 
 function buildFallbackSeats(zone) {
@@ -24,11 +24,13 @@ function getSeatRow(seat, zoneName) {
   return zoneName ?? 'Fila';
 }
 
-export default function CheckoutPage({ event, onBack }) {
+export default function CheckoutPage({ event, user, onBack }) {
   const [selectedZoneId, setSelectedZoneId] = useState(event?.zones?.[0]?.id ?? '');
   const [seats, setSeats] = useState([]);
   const [selectedSeatIds, setSelectedSeatIds] = useState([]);
   const [isLoadingSeats, setIsLoadingSeats] = useState(false);
+  const [orderStatus, setOrderStatus] = useState({ type: '', message: '' });
+  const [isCreatingOrder, setIsCreatingOrder] = useState(false);
 
   const selectedZone = event?.zones?.find((zone) => String(zone.id) === String(selectedZoneId));
   const selectedSeats = seats.filter((seat) => selectedSeatIds.includes(seat.id));
@@ -87,6 +89,32 @@ export default function CheckoutPage({ event, onBack }) {
 
       return [...current, seat.id];
     });
+  };
+
+  const createOrder = async () => {
+    if (!selectedZone || selectedSeats.length === 0 || isCreatingOrder) return;
+
+    setIsCreatingOrder(true);
+    setOrderStatus({ type: '', message: '' });
+
+    try {
+      const ticketResponse = await purchaseTickets({ user, event, zone: selectedZone, seats: selectedSeats });
+      setOrderStatus({
+        type: 'success',
+        message: ticketResponse?.message ?? 'Tus entradas quedaron registradas correctamente.'
+      });
+      setSeats((current) => current.map((seat) => (
+        selectedSeatIds.includes(seat.id) ? { ...seat, status: 'sold' } : seat
+      )));
+      setSelectedSeatIds([]);
+    } catch (error) {
+      setOrderStatus({
+        type: 'error',
+        message: error.message || 'No fue posible crear la orden. Intentalo nuevamente.'
+      });
+    } finally {
+      setIsCreatingOrder(false);
+    }
   };
 
   if (!event) {
@@ -229,8 +257,19 @@ export default function CheckoutPage({ event, onBack }) {
             <span>Total estimado</span>
             <strong>{formatCurrency(total)}</strong>
           </div>
-          <button className="primary-button" disabled={selectedSeats.length === 0}>Crear orden</button>
-          <p className="secure-note"><ShieldCheck size={16} /> Flujo preparado para pago seguro y autenticación.</p>
+          {orderStatus.message && (
+            <div className={`form-status ${orderStatus.type}`}>
+              {orderStatus.message}
+            </div>
+          )}
+          <button
+            className="primary-button"
+            disabled={selectedSeats.length === 0 || isCreatingOrder}
+            onClick={createOrder}
+          >
+            {isCreatingOrder ? 'Creando orden...' : 'Crear orden'}
+          </button>
+          <p className="secure-note"><ShieldCheck size={16} /> Compra asociada a tu cuenta OrbiX.</p>
         </aside>
       </div>
     </section>

@@ -1187,6 +1187,32 @@ button {
   color: var(--ink);
 }
 
+.auth-switch {
+  margin-top: 18px;
+  border: 0;
+  background: transparent;
+  color: var(--blue);
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.form-status {
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.form-status.error {
+  background: #fff1f2;
+  color: #b42318;
+}
+
+.form-status.success {
+  background: #ecfdf3;
+  color: #027a48;
+}
+
 .auth-note {
   display: grid;
   align-content: start;

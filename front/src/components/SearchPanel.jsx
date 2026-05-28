@@ -16,7 +16,7 @@ export default function SearchPanel({ filters, onFiltersChange }) {
         </label>
 
         <label className="filter-field">
-          <span><Tags size={16} /> Categoría</span>
+          <span><Tags size={16} /> Categoria</span>
           <select value={filters.category} onChange={(event) => update('category', event.target.value)}>
             {categories.map((category) => <option key={category} value={category}>{category}</option>)}
           </select>

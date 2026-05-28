@@ -1,6 +1,6 @@
 import { Save, UserRound } from 'lucide-react';
 
-export default function ProfilePage() {
+export default function ProfilePage({ user }) {
   return (
     <section className="form-page">
       <div className="section-heading compact">
@@ -13,15 +13,15 @@ export default function ProfilePage() {
       <form className="profile-form">
         <label>
           Nombre completo
-          <input defaultValue="Cliente OrbiX" />
+          <input defaultValue={user?.fullName ?? 'Cliente OrbiX'} />
         </label>
         <label>
           Correo
-          <input defaultValue="cliente@orbix.local" />
+          <input defaultValue={user?.email ?? ''} />
         </label>
         <label>
-          Teléfono
-          <input defaultValue="+57 300 000 0000" />
+          Telefono
+          <input defaultValue={user?.phone ?? ''} />
         </label>
         <label>
           Ciudad
@@ -35,8 +35,8 @@ export default function ProfilePage() {
 
       <aside className="profile-card">
         <UserRound size={28} />
-        <strong>Tu información</strong>
-        <span>Mantén tus datos actualizados para recibir tus entradas y novedades sin contratiempos.</span>
+        <strong>Tu informacion</strong>
+        <span>Manten tus datos actualizados para recibir tus entradas y novedades sin contratiempos.</span>
       </aside>
     </section>
   );
