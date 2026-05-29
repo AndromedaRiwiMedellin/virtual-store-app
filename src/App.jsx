@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import Header from './components/Header.jsx';
 import { events as fallbackEvents } from './data/events.js';
-
 import CheckoutPage from './pages/CheckoutPage.jsx';
+import DigitalTicketPage from './pages/DigitalTicketPage.jsx';
 import EventDetailPage from './pages/EventDetailPage.jsx';
 import FavoritesPage from './pages/FavoritesPage.jsx';
 import HistoryPage from './pages/HistoryPage.jsx';
@@ -10,8 +10,8 @@ import HomePage from './pages/HomePage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import PqrsPage from './pages/PqrsPage.jsx';
 import ProfilePage from './pages/ProfilePage.jsx';
-
 import { getEvent, getEvents } from './services/eventsApi.js';
+import { addStoredPurchase } from './services/ticketStorage.js';
 
 function getStoredUser() {
   try {
@@ -28,22 +28,15 @@ const initialFilters = {
   date: ''
 };
 
-function App() {
+export default function App() {
   const [view, setView] = useState('home');
   const [user, setUser] = useState(getStoredUser);
   const [authReason, setAuthReason] = useState('');
   const [filters, setFilters] = useState(initialFilters);
-
   const [events, setEvents] = useState(fallbackEvents);
-
-  const [selectedEventId, setSelectedEventId] = useState(
-    fallbackEvents[0]?.id
-  );
-
-  const [selectedEvent, setSelectedEvent] = useState(
-    fallbackEvents[0]
-  );
-
+  const [selectedEventId, setSelectedEventId] = useState(fallbackEvents[0].id);
+  const [selectedEvent, setSelectedEvent] = useState(fallbackEvents[0]);
+  const [activePurchase, setActivePurchase] = useState(null);
   const [isLoadingEvents, setIsLoadingEvents] = useState(true);
 
   const isAuthenticated = Boolean(user?.id || user?.email);
@@ -52,26 +45,17 @@ function App() {
     let ignore = false;
 
     setIsLoadingEvents(true);
-
     getEvents(filters)
       .then((apiEvents) => {
         if (ignore) return;
-
         setEvents(apiEvents);
-
-        if (
-          !apiEvents.some(
-            (event) => event.id === selectedEventId
-          ) &&
-          apiEvents.length > 0
-        ) {
+        if (!apiEvents.some((event) => event.id === selectedEventId) && apiEvents.length > 0) {
           setSelectedEventId(apiEvents[0].id);
           setSelectedEvent(apiEvents[0]);
         }
       })
       .catch(() => {
         if (ignore) return;
-
         setEvents(fallbackEvents);
       })
       .finally(() => {
@@ -84,93 +68,54 @@ function App() {
   }, [filters, selectedEventId]);
 
   const currentSelectedEvent = useMemo(
-    () =>
-      selectedEvent ??
-      events.find(
-        (event) => event.id === selectedEventId
-      ),
+    () => selectedEvent ?? events.find((event) => event.id === selectedEventId),
     [events, selectedEvent, selectedEventId]
   );
 
   const handleAuthSuccess = (nextUser) => {
     setUser(nextUser);
-
-    localStorage.setItem(
-      'orbix_user',
-      JSON.stringify(nextUser)
-    );
-
+    localStorage.setItem('orbix_user', JSON.stringify(nextUser));
     setAuthReason('');
     setView('home');
-
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleLogout = () => {
     setUser(null);
-
     localStorage.removeItem('orbix_user');
-
     setAuthReason('');
     setView('home');
-
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const navigate = (nextView) => {
-    const privateViews = [
-      'profile',
-      'history',
-      'favorites',
-      'checkout'
-    ];
-
-    if (
-      !isAuthenticated &&
-      privateViews.includes(nextView)
-    ) {
-      setAuthReason(
-        'Ingresa a tu cuenta para ver esta seccion de forma segura.'
-      );
-
+    const privateViews = ['profile', 'history', 'favorites', 'checkout', 'ticket', 'pqrs'];
+    if (!isAuthenticated && privateViews.includes(nextView)) {
+      setAuthReason('Ingresa a tu cuenta para ver esta seccion de forma segura.');
       setView('login');
-
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
     setView(nextView);
   };
 
+  const handlePurchaseComplete = (purchase) => {
+    const storedPurchase = addStoredPurchase(purchase);
+    setActivePurchase(storedPurchase);
+    setView('ticket');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const openEvent = async (eventId) => {
     setSelectedEventId(eventId);
-
-    const localEvent = events.find(
-      (event) => event.id === eventId
-    );
-
+    const localEvent = events.find((event) => event.id === eventId);
     setSelectedEvent(localEvent);
-
     setView('detail');
-
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 
     try {
       const eventDetail = await getEvent(eventId);
-
       setSelectedEvent(eventDetail);
     } catch {
       setSelectedEvent(localEvent);
@@ -179,59 +124,29 @@ function App() {
 
   const goToCheckout = async (eventId) => {
     setSelectedEventId(eventId);
-
-    const localEvent = events.find(
-      (event) => event.id === eventId
-    );
-
-    setSelectedEvent((current) =>
-      current?.id === eventId
-        ? current
-        : localEvent
-    );
-
+    const localEvent = events.find((event) => event.id === eventId);
+    setSelectedEvent((current) => current?.id === eventId ? current : localEvent);
     if (!isAuthenticated) {
-      setAuthReason(
-        'Ingresa a tu cuenta para seleccionar sillas y continuar con tu compra.'
-      );
-
+      setAuthReason('Ingresa a tu cuenta para seleccionar sillas y continuar con tu compra.');
       setView('login');
-
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
     setView('checkout');
-
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 
     try {
       const eventDetail = await getEvent(eventId);
-
       setSelectedEvent(eventDetail);
     } catch {
-      setSelectedEvent(
-        (current) => current ?? localEvent
-      );
+      setSelectedEvent((current) => current ?? localEvent);
     }
   };
 
   return (
     <div className="app-shell">
-      <Header
-        activeView={view}
-        isAuthenticated={isAuthenticated}
-        onLogout={handleLogout}
-        onNavigate={navigate}
-      />
-
+      <Header activeView={view} isAuthenticated={isAuthenticated} onLogout={handleLogout} onNavigate={navigate} />
       <main className="page-shell">
         {view === 'home' && (
           <HomePage
@@ -242,51 +157,42 @@ function App() {
             onOpenEvent={openEvent}
           />
         )}
-
         {view === 'detail' && (
-          <EventDetailPage
-            event={currentSelectedEvent}
-            onBack={() => navigate('home')}
-            onCheckout={goToCheckout}
-          />
+          <EventDetailPage event={currentSelectedEvent} onBack={() => navigate('home')} onCheckout={goToCheckout} />
         )}
-
         {view === 'checkout' && (
           <CheckoutPage
             event={currentSelectedEvent}
             user={user}
             onBack={() => navigate('detail')}
+            onPurchaseComplete={handlePurchaseComplete}
           />
         )}
-
         {view === 'profile' && (
-          <ProfilePage user={user} />
+          <ProfilePage
+            user={user}
+            onOpenPurchase={(purchase) => {
+              setActivePurchase(purchase);
+              setView('ticket');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          />
         )}
-
         {view === 'history' && (
-          <HistoryPage />
-        )}
-
-        {view === 'favorites' && (
-          <FavoritesPage
-            events={events}
-            onOpenEvent={openEvent}
+          <HistoryPage
+            user={user}
+            onOpenPurchase={(purchase) => {
+              setActivePurchase(purchase);
+              setView('ticket');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
           />
         )}
-
-        {view === 'pqrs' && (
-          <PqrsPage />
-        )}
-
-        {view === 'login' && (
-          <LoginPage
-            reason={authReason}
-            onAuthenticated={handleAuthSuccess}
-          />
-        )}
+        {view === 'favorites' && <FavoritesPage events={events} onOpenEvent={openEvent} />}
+        {view === 'pqrs' && <PqrsPage user={user} />}
+        {view === 'login' && <LoginPage reason={authReason} onAuthenticated={handleAuthSuccess} />}
+        {view === 'ticket' && <DigitalTicketPage purchase={activePurchase} onBack={() => navigate('history')} />}
       </main>
     </div>
   );
 }
-
-export default App;
