@@ -1,16 +1,67 @@
-# React + Vite
+# OrbiX Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Repositorio del frontend de OrbiX construido con React y Vite. La aplicacion consume la API desplegada de Andromeda para mostrar eventos, autenticar usuarios, consultar disponibilidad y continuar el flujo de compra.
 
-Currently, two official plugins are available:
+## Estructura
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```text
+front/
+  src/
+    assets/
+    components/
+    data/
+    pages/
+    services/
+    styles/
+    utils/
+```
 
-## React Compiler
+## Requisitos
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Node.js 22 o superior.
+- Docker Desktop, si se desea correr como contenedor.
 
-## Expanding the ESLint configuration
+## Variables
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Crear un archivo `.env` en la raiz o dentro de `front/` tomando como base `.env.example`.
+
+```env
+FRONT_PORT=5173
+VITE_API_BASE_URL=https://service.andromeda.andrescortes.dev
+```
+
+## Desarrollo Local
+
+```powershell
+cd front
+npm install
+npm run dev
+```
+
+URL local:
+
+```text
+http://localhost:5173
+```
+
+## Build
+
+```powershell
+cd front
+npm run build
+```
+
+## Docker
+
+Desde la raiz del repositorio:
+
+```powershell
+docker compose up --build
+```
+
+O construyendo solo la imagen:
+
+```powershell
+docker build -t virtual-store-front --build-arg VITE_API_BASE_URL=https://service.andromeda.andrescortes.dev ./front
+docker run --rm -p 5173:80 virtual-store-front
+```
