@@ -5,25 +5,25 @@ export default function SearchPanel({ filters, onFiltersChange }) {
   const update = (key, value) => onFiltersChange({ ...filters, [key]: value });
 
   return (
-    <section className="search-panel" aria-label="Buscar eventos">
+    <section className="search-panel" aria-label="Search events">
       <div className="filter-row">
         <label className="filter-field">
-          <span><MapPin size={16} /> Ciudad</span>
+          <span><MapPin size={16} /> City</span>
           <select value={filters.city} onChange={(event) => update('city', event.target.value)}>
-            <option value="Todas">Todas</option>
+            <option value="All">All</option>
             {cities.map((city) => <option key={city} value={city}>{city}</option>)}
           </select>
         </label>
 
         <label className="filter-field">
-          <span><Tags size={16} /> Categoria</span>
+          <span><Tags size={16} /> Category</span>
           <select value={filters.category} onChange={(event) => update('category', event.target.value)}>
             {categories.map((category) => <option key={category} value={category}>{category}</option>)}
           </select>
         </label>
 
         <label className="filter-field">
-          <span><Calendar size={16} /> Fecha</span>
+          <span><Calendar size={16} /> Date</span>
           <input type="date" value={filters.date} onChange={(event) => update('date', event.target.value)} />
         </label>
       </div>
@@ -33,9 +33,9 @@ export default function SearchPanel({ filters, onFiltersChange }) {
         <input
           value={filters.query}
           onChange={(event) => update('query', event.target.value)}
-          placeholder="Buscar por artista, evento, escenario o ciudad"
+          placeholder="Search by artist, event, venue, or city"
         />
-        <button type="button">Buscar</button>
+        <button type="button">Search</button>
       </label>
     </section>
   );

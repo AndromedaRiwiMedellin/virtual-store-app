@@ -6,8 +6,8 @@ export default function VenueStrip() {
     <section className="venue-strip">
       <div className="section-heading compact">
         <div>
-          <span>Escenarios</span>
-          <h2>Lugares activos</h2>
+          <span>Venues</span>
+          <h2>Active places</h2>
         </div>
       </div>
       <div className="venue-list">
@@ -16,7 +16,7 @@ export default function VenueStrip() {
             <Building2 size={20} />
             <div>
               <strong>{venue.name}</strong>
-              <span>{venue.city} · {venue.events} eventos</span>
+              <span>{venue.city} - {venue.events} events</span>
             </div>
           </article>
         ))}

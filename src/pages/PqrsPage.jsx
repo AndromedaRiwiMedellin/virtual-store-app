@@ -4,20 +4,20 @@ import { createPqrs, getMyPqrs } from '../services/pqrsApi.js';
 import { formatDate } from '../utils/formatters.js';
 
 const initialForm = {
-  type: 'Peticion',
+  type: 'Petition',
   subject: '',
   message: ''
 };
 
 const statusLabels = {
-  OPEN: 'Abierta',
-  ANSWERED: 'Respondida',
-  CLOSED: 'Cerrada',
-  IN_REVIEW: 'En revision'
+  OPEN: 'Open',
+  ANSWERED: 'Answered',
+  CLOSED: 'Closed',
+  IN_REVIEW: 'In review'
 };
 
 function getStatusLabel(status) {
-  return statusLabels[String(status ?? '').toUpperCase()] ?? status ?? 'Abierta';
+  return statusLabels[String(status ?? '').toUpperCase()] ?? status ?? 'Open';
 }
 
 export default function PqrsPage({ user }) {
@@ -34,7 +34,7 @@ export default function PqrsPage({ user }) {
       .catch(() => {
         setStatus({
           type: 'error',
-          message: 'No pudimos cargar tus solicitudes en este momento.'
+          message: 'We could not load your requests right now.'
         });
       })
       .finally(() => setIsLoading(false));
@@ -54,7 +54,7 @@ export default function PqrsPage({ user }) {
     if (isSubmitting) return;
 
     if (!form.subject.trim() || !form.message.trim()) {
-      setStatus({ type: 'error', message: 'Completa el asunto y el mensaje para enviar tu solicitud.' });
+      setStatus({ type: 'error', message: 'Complete the subject and message to submit your request.' });
       return;
     }
 
@@ -64,10 +64,10 @@ export default function PqrsPage({ user }) {
     try {
       await createPqrs(user, form);
       setForm(initialForm);
-      setStatus({ type: 'success', message: 'Solicitud enviada. Podras consultar el estado desde esta misma seccion.' });
+      setStatus({ type: 'success', message: 'Request submitted. You can check the status from this same section.' });
       loadRequests();
     } catch (error) {
-      setStatus({ type: 'error', message: error.message || 'No fue posible enviar la solicitud.' });
+      setStatus({ type: 'error', message: error.message || 'We could not submit the request.' });
     } finally {
       setIsSubmitting(false);
     }
@@ -77,36 +77,36 @@ export default function PqrsPage({ user }) {
     <section className="form-page">
       <div className="section-heading compact">
         <div>
-          <span>Soporte</span>
-          <h1>Estado y respuestas de PQRS</h1>
+          <span>Support</span>
+          <h1>PQRS status and responses</h1>
         </div>
       </div>
 
       <form className="profile-form" onSubmit={handleSubmit}>
         <label>
-          Tipo de solicitud
+          Request type
           <select value={form.type} onChange={(event) => handleChange('type', event.target.value)}>
-            <option>Peticion</option>
-            <option>Queja</option>
-            <option>Reclamo</option>
-            <option>Sugerencia</option>
+            <option>Petition</option>
+            <option>Complaint</option>
+            <option>Claim</option>
+            <option>Suggestion</option>
           </select>
         </label>
         <label>
-          Asunto
+          Subject
           <input
             value={form.subject}
             onChange={(event) => handleChange('subject', event.target.value)}
-            placeholder="Ej. Problema con mi orden"
+            placeholder="Example: Problem with my order"
           />
         </label>
         <label className="full">
-          Mensaje
+          Message
           <textarea
             rows="6"
             value={form.message}
             onChange={(event) => handleChange('message', event.target.value)}
-            placeholder="Describe tu solicitud"
+            placeholder="Describe your request"
           />
         </label>
         {status.message && (
@@ -116,16 +116,16 @@ export default function PqrsPage({ user }) {
         )}
         <button className="primary-button" type="submit" disabled={isSubmitting}>
           <Send size={18} />
-          {isSubmitting ? 'Enviando...' : 'Enviar solicitud'}
+          {isSubmitting ? 'Submitting...' : 'Submit request'}
         </button>
       </form>
 
       <div className="status-panel">
-        <strong>Mis solicitudes</strong>
+        <strong>My requests</strong>
         {isLoading ? (
-          <p>Cargando solicitudes recientes.</p>
+          <p>Loading recent requests.</p>
         ) : requests.length === 0 ? (
-          <p>Aun no tienes solicitudes registradas.</p>
+          <p>You do not have registered requests yet.</p>
         ) : (
           <div className="pqrs-list">
             {requests.map((item) => (
@@ -138,7 +138,7 @@ export default function PqrsPage({ user }) {
                 {item.responses?.length > 0 ? (
                   <p>{item.responses[item.responses.length - 1].response}</p>
                 ) : (
-                  <p>Tu solicitud esta en revision por el equipo de soporte.</p>
+                  <p>Your request is under review by the support team.</p>
                 )}
               </article>
             ))}

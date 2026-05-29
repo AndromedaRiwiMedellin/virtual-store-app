@@ -20,7 +20,7 @@ export default function HistoryPage({ user, onOpenPurchase }) {
       .catch(() => {
         if (!ignore) {
           setPurchases([]);
-          setStatusMessage('No pudimos cargar tus compras en este momento. Intenta nuevamente en unos minutos.');
+          setStatusMessage('We could not load your purchases right now. Please try again in a few minutes.');
         }
       })
       .finally(() => {
@@ -36,25 +36,25 @@ export default function HistoryPage({ user, onOpenPurchase }) {
     <section className="list-page">
       <div className="section-heading compact">
         <div>
-          <span>Compras</span>
-          <h1>Historial de compras</h1>
+          <span>Purchases</span>
+          <h1>Purchase history</h1>
         </div>
       </div>
 
       {isLoading ? (
         <div className="empty-state compact">
-          <h2>Cargando tus compras.</h2>
-          <p>Estamos consultando tus entradas recientes.</p>
+          <h2>Loading your purchases.</h2>
+          <p>We are checking your recent tickets.</p>
         </div>
       ) : statusMessage ? (
         <div className="empty-state compact">
-          <h2>No se pudo cargar el historial.</h2>
+          <h2>The history could not be loaded.</h2>
           <p>{statusMessage}</p>
         </div>
       ) : purchases.length === 0 ? (
         <div className="empty-state compact">
-          <h2>Aun no tienes compras registradas.</h2>
-          <p>Cuando completes una compra, tus boletas digitales apareceran aqui.</p>
+          <h2>You do not have registered purchases yet.</h2>
+          <p>Once you complete a purchase, your digital tickets will appear here.</p>
         </div>
       ) : (
         <div className="purchase-list">
@@ -63,13 +63,13 @@ export default function HistoryPage({ user, onOpenPurchase }) {
               <ReceiptText size={22} />
               <div>
                 <strong>{purchase.event.title}</strong>
-                <span>{purchase.tickets.length} entrada(s) - {formatDate(purchase.purchasedAt)}</span>
+                <span>{purchase.tickets.length} ticket(s) - {formatDate(purchase.purchasedAt)}</span>
               </div>
               <b>{formatCurrency(purchase.total)}</b>
               <em>{purchase.status}</em>
               <button className="ticket-link-button" onClick={() => onOpenPurchase(purchase)}>
                 <QrCode size={17} />
-                Ver QR
+                View QR
               </button>
             </article>
           ))}

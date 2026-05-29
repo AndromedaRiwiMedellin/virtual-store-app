@@ -23,8 +23,8 @@ function getStoredUser() {
 
 const initialFilters = {
   query: '',
-  city: 'Todas',
-  category: 'Todos',
+  city: 'All',
+  category: 'All',
   date: ''
 };
 
@@ -91,7 +91,7 @@ export default function App() {
   const navigate = (nextView) => {
     const privateViews = ['profile', 'history', 'favorites', 'checkout', 'ticket', 'pqrs'];
     if (!isAuthenticated && privateViews.includes(nextView)) {
-      setAuthReason('Ingresa a tu cuenta para ver esta seccion de forma segura.');
+      setAuthReason('Sign in to your account to access this section securely.');
       setView('login');
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
@@ -127,7 +127,7 @@ export default function App() {
     const localEvent = events.find((event) => event.id === eventId);
     setSelectedEvent((current) => current?.id === eventId ? current : localEvent);
     if (!isAuthenticated) {
-      setAuthReason('Ingresa a tu cuenta para seleccionar sillas y continuar con tu compra.');
+      setAuthReason('Sign in to select seats and continue your purchase.');
       setView('login');
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;

@@ -39,7 +39,7 @@ export default function LoginPage({ reason, onAuthenticated }) {
       const user = await login(loginData);
       onAuthenticated(user);
     } catch (error) {
-      setStatus({ type: 'error', message: error.message || 'Credenciales invalidas.' });
+      setStatus({ type: 'error', message: error.message || 'Invalid credentials.' });
     } finally {
       setIsLoading(false);
     }
@@ -50,12 +50,12 @@ export default function LoginPage({ reason, onAuthenticated }) {
     setStatus({ type: '', message: '' });
 
     if (!passwordCriteria.hasLength || !passwordCriteria.hasUpper || !passwordCriteria.hasNumber) {
-      setStatus({ type: 'error', message: 'La contrasena no cumple los requisitos.' });
+      setStatus({ type: 'error', message: 'The password does not meet the requirements.' });
       return;
     }
 
     if (!passwordsMatch) {
-      setStatus({ type: 'error', message: 'Las contrasenas no coinciden.' });
+      setStatus({ type: 'error', message: 'Passwords do not match.' });
       return;
     }
 
@@ -67,11 +67,11 @@ export default function LoginPage({ reason, onAuthenticated }) {
         email: registerData.email,
         password: registerData.password
       });
-      setStatus({ type: 'success', message: 'Cuenta creada correctamente.' });
+      setStatus({ type: 'success', message: 'Account created successfully.' });
       setRegisterData(initialRegister);
       onAuthenticated(user);
     } catch (error) {
-      setStatus({ type: 'error', message: error.message || 'No fue posible crear la cuenta.' });
+      setStatus({ type: 'error', message: error.message || 'We could not create the account.' });
     } finally {
       setIsLoading(false);
     }
@@ -83,7 +83,7 @@ export default function LoginPage({ reason, onAuthenticated }) {
         <aside className="main-auth-brand">
           <img src={orbixMark} alt="OrbiX" />
           <h2>OrbiX</h2>
-          <p>El centro de tus eventos</p>
+          <p>Your events hub</p>
           <span />
         </aside>
 
@@ -91,32 +91,32 @@ export default function LoginPage({ reason, onAuthenticated }) {
           <div className="main-auth-top">
             <div className="secure-access">
               <i />
-              <span>Acceso seguro</span>
+              <span>Secure access</span>
             </div>
 
-            <div className="auth-tabs" role="tablist" aria-label="Acceso de usuarios">
+            <div className="auth-tabs" role="tablist" aria-label="User access">
               <button
                 type="button"
                 className={activeTab === 'signin' ? 'active' : ''}
                 onClick={() => setActiveTab('signin')}
               >
-                Ingresar
+                Sign in
               </button>
               <button
                 type="button"
                 className={activeTab === 'signup' ? 'active' : ''}
                 onClick={() => setActiveTab('signup')}
               >
-                Registro
+                Register
               </button>
             </div>
           </div>
 
-          <h1>{activeTab === 'signin' ? 'Bienvenido de nuevo' : 'Crea tu cuenta'}</h1>
+          <h1>{activeTab === 'signin' ? 'Welcome back' : 'Create your account'}</h1>
           <p className="main-auth-copy">
             {reason || (activeTab === 'signin'
-              ? 'Ingresa tus datos para continuar con tu experiencia OrbiX.'
-              : 'Completa tus datos para comprar entradas y guardar tus eventos.')}
+              ? 'Enter your details to continue your OrbiX experience.'
+              : 'Complete your details to buy tickets and save your events.')}
           </p>
 
           {status.message && (
@@ -128,7 +128,7 @@ export default function LoginPage({ reason, onAuthenticated }) {
           {activeTab === 'signin' ? (
             <form className="main-auth-form" onSubmit={handleSignIn}>
               <label>
-                Correo electronico
+                Email
                 <input
                   type="email"
                   value={loginData.email}
@@ -139,34 +139,34 @@ export default function LoginPage({ reason, onAuthenticated }) {
               </label>
 
               <label>
-                Contrasena
+                Password
                 <input
                   type="password"
                   value={loginData.password}
                   onChange={(event) => setLoginData({ ...loginData, password: event.target.value })}
-                  placeholder="Ingresa tu contrasena"
+                  placeholder="Enter your password"
                   required
                 />
               </label>
 
               <button className="main-auth-submit" type="submit" disabled={isLoading}>
-                {isLoading ? 'Validando...' : 'Ingresar'}
+                {isLoading ? 'Validating...' : 'Sign in'}
               </button>
             </form>
           ) : (
             <form className="main-auth-form" onSubmit={handleSignUp}>
               <label>
-                Nombre completo
+                Full name
                 <input
                   value={registerData.fullName}
                   onChange={(event) => setRegisterData({ ...registerData, fullName: event.target.value })}
-                  placeholder="Tu nombre"
+                  placeholder="Your name"
                   required
                 />
               </label>
 
               <label>
-                Correo electronico
+                Email
                 <input
                   type="email"
                   value={registerData.email}
@@ -177,48 +177,48 @@ export default function LoginPage({ reason, onAuthenticated }) {
               </label>
 
               <label>
-                Contrasena
+                Password
                 <input
                   type="password"
                   value={registerData.password}
                   onChange={(event) => setRegisterData({ ...registerData, password: event.target.value })}
-                  placeholder="Minimo 8 caracteres"
+                  placeholder="Minimum 8 characters"
                   required
                 />
               </label>
 
               {registerData.password && (
                 <div className="password-rules">
-                  <span className={passwordCriteria.hasLength ? 'valid' : 'invalid'}>Minimo 8 caracteres</span>
-                  <span className={passwordCriteria.hasUpper ? 'valid' : 'invalid'}>Una letra mayuscula</span>
-                  <span className={passwordCriteria.hasNumber ? 'valid' : 'invalid'}>Un numero</span>
+                  <span className={passwordCriteria.hasLength ? 'valid' : 'invalid'}>Minimum 8 characters</span>
+                  <span className={passwordCriteria.hasUpper ? 'valid' : 'invalid'}>One uppercase letter</span>
+                  <span className={passwordCriteria.hasNumber ? 'valid' : 'invalid'}>One number</span>
                 </div>
               )}
 
               <label>
-                Confirmar contrasena
+                Confirm password
                 <input
                   type="password"
                   value={registerData.confirmPassword}
                   onChange={(event) => setRegisterData({ ...registerData, confirmPassword: event.target.value })}
-                  placeholder="Repite tu contrasena"
+                  placeholder="Repeat your password"
                   required
                 />
               </label>
 
               {registerData.confirmPassword && (
                 <span className={passwordsMatch ? 'password-match valid' : 'password-match invalid'}>
-                  {passwordsMatch ? 'Las contrasenas coinciden' : 'Las contrasenas no coinciden'}
+                  {passwordsMatch ? 'Passwords match' : 'Passwords do not match'}
                 </span>
               )}
 
               <button className="main-auth-submit" type="submit" disabled={isLoading}>
-                {isLoading ? 'Creando cuenta...' : 'Registrar cuenta'}
+                {isLoading ? 'Creating account...' : 'Create account'}
               </button>
             </form>
           )}
 
-          <small className="main-auth-footer">OrbiX 2026 - El centro de tus eventos</small>
+          <small className="main-auth-footer">OrbiX 2026 - Your events hub</small>
         </div>
       </div>
     </section>

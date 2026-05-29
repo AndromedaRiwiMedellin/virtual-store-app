@@ -10,7 +10,7 @@ async function request(path, options = {}) {
   });
 
   if (!response.ok) {
-    let message = 'No se pudo completar la solicitud.';
+    let message = 'The request could not be completed.';
     try {
       const error = await response.json();
       message = error.detail ?? error.message ?? error.title ?? message;

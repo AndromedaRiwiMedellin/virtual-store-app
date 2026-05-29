@@ -97,26 +97,26 @@ function buildVenueSeats(seats, zones = []) {
     const curve = Math.abs(4.5 - sideCol) * (row < 3 ? 3.6 : 1.6);
     const x = side === 'left' ? 318 + sideCol * 28 - row * 2 : 696 + sideCol * 28 + row * 2;
     const y = 220 + row * 34 + curve;
-    return { seat, x, y, zoneKind: 'vip', section: 'VIP Central' };
+    return { seat, x, y, zoneKind: 'vip', section: 'Central VIP' };
   });
 
   const left = generalSeats.slice(0, 60).map((seat, index) => {
     const row = Math.floor(index / 6);
     const col = index % 6;
-    return { seat, x: 92 + col * 33 - row * 3, y: 302 + row * 35, zoneKind: 'general', section: 'General izquierda' };
+    return { seat, x: 92 + col * 33 - row * 3, y: 302 + row * 35, zoneKind: 'general', section: 'Left General' };
   });
 
   const right = generalSeats.slice(60, 120).map((seat, index) => {
     const row = Math.floor(index / 6);
     const col = index % 6;
-    return { seat, x: 972 + col * 33 + row * 3, y: 302 + row * 35, zoneKind: 'general', section: 'General derecha' };
+    return { seat, x: 972 + col * 33 + row * 3, y: 302 + row * 35, zoneKind: 'general', section: 'Right General' };
   });
 
   const rear = generalSeats.slice(120, 200).map((seat, index) => {
     const row = Math.floor(index / 20);
     const col = index % 20;
     const arc = Math.abs(9.5 - col) * 1.3;
-    return { seat, x: 305 + col * 32, y: 618 + row * 34 + arc, zoneKind: 'general', section: 'General posterior' };
+    return { seat, x: 305 + col * 32, y: 618 + row * 34 + arc, zoneKind: 'general', section: 'Rear General' };
   });
 
   return [...vip, ...left, ...right, ...rear];
@@ -210,7 +210,7 @@ export default function CheckoutPage({ event, user, onBack, onPurchaseComplete }
     setCheckoutStep('seats');
     setOrderStatus({
       type: 'error',
-      message: 'La retencion de 30 segundos finalizo. Selecciona nuevamente tus asientos.'
+      message: 'The 30-second hold expired. Select your seats again.'
     });
   }, [holdExpiresAt, now, selectedSeatIds.length, isCreatingOrder]);
 
@@ -267,7 +267,7 @@ export default function CheckoutPage({ event, user, onBack, onPurchaseComplete }
   const createOrder = async () => {
     if (!selectedZone || selectedSeats.length === 0 || isCreatingOrder || !paymentReady) return;
     if (holdExpiresAt && Date.now() >= holdExpiresAt) {
-      setOrderStatus({ type: 'error', message: 'La retencion vencio. Selecciona tus asientos nuevamente.' });
+      setOrderStatus({ type: 'error', message: 'The hold expired. Select your seats again.' });
       return;
     }
 
@@ -307,7 +307,7 @@ export default function CheckoutPage({ event, user, onBack, onPurchaseComplete }
         seats: selectedSeats.map((seat) => ({ id: seat.id, seatNumber: seat.seatNumber })),
         tickets,
         total,
-        status: 'Pagado',
+        status: 'Paid',
         purchasedAt: new Date().toISOString(),
         user: {
           id: user?.id,
@@ -318,7 +318,7 @@ export default function CheckoutPage({ event, user, onBack, onPurchaseComplete }
     } catch (error) {
       setOrderStatus({
         type: 'error',
-        message: error.message || 'No fue posible completar la compra. Intentalo nuevamente.'
+        message: error.message || 'We could not complete the purchase. Please try again.'
       });
     } finally {
       setIsCreatingOrder(false);
@@ -328,8 +328,8 @@ export default function CheckoutPage({ event, user, onBack, onPurchaseComplete }
   if (!event) {
     return (
       <section className="empty-state">
-        <h2>No hay evento seleccionado.</h2>
-        <button onClick={onBack}>Volver</button>
+        <h2>No event selected.</h2>
+        <button onClick={onBack}>Back</button>
       </section>
     );
   }
@@ -338,16 +338,16 @@ export default function CheckoutPage({ event, user, onBack, onPurchaseComplete }
     <section className="checkout-layout">
       <button className="ghost-button" onClick={onBack}>
         <ArrowLeft size={18} />
-        Volver al detalle
+        Back to details
       </button>
 
       <div className="checkout-grid">
         <article className="checkout-main">
           <span className="event-category">{event.category}</span>
-          <h1>{checkoutStep === 'payment' ? 'Pagar con tarjeta' : 'Selecciona tus entradas'}</h1>
+          <h1>{checkoutStep === 'payment' ? 'Pay by card' : 'Select your tickets'}</h1>
           <p>{event.title} - {event.venue}</p>
 
-          <div className="seat-zone-tabs" aria-label="Zonas disponibles">
+          <div className="seat-zone-tabs" aria-label="Available zones">
             {(event.zones ?? []).map((zone) => (
               <button
                 key={zone.id}
@@ -360,7 +360,7 @@ export default function CheckoutPage({ event, user, onBack, onPurchaseComplete }
                 }}
               >
                 <strong>{zone.name}</strong>
-                <span>{formatCurrency(zone.price)} - {zone.available} libres</span>
+                <span>{formatCurrency(zone.price)} - {zone.available} available</span>
               </button>
             ))}
           </div>
@@ -368,18 +368,18 @@ export default function CheckoutPage({ event, user, onBack, onPurchaseComplete }
           <div className="seat-picker-shell">
             <div className="seat-field-header">
               <div>
-                <span>Campo de sillas</span>
-                <strong>{selectedZone?.name ?? 'Zona'}</strong>
+                <span>Seat map</span>
+                <strong>{selectedZone?.name ?? 'Zone'}</strong>
               </div>
-              <small>{seats.length} sillas en el recinto</small>
+              <small>{seats.length} seats in the venue</small>
             </div>
 
             <div className="stage-wrap">
-              <span className="stage-label">ESCENARIO</span>
+              <span className="stage-label">STAGE</span>
               <div className="stage-glow" />
             </div>
 
-            <div className="venue-zone-overview" aria-label="Distribucion general del escenario">
+            <div className="venue-zone-overview" aria-label="General venue layout">
               <button
                 type="button"
                 className={`venue-zone-pill vip ${isVipZone(selectedZone) ? 'active' : ''}`}
@@ -394,9 +394,9 @@ export default function CheckoutPage({ event, user, onBack, onPurchaseComplete }
                 }}
               >
                 <strong>VIP</strong>
-                <span>Frente al escenario</span>
+                <span>In front of the stage</span>
               </button>
-              <div className="venue-aisle-line"><span>Pasarela</span></div>
+              <div className="venue-aisle-line"><span>Runway</span></div>
               <button
                 type="button"
                 className={`venue-zone-pill general ${!isVipZone(selectedZone) ? 'active' : ''}`}
@@ -411,37 +411,37 @@ export default function CheckoutPage({ event, user, onBack, onPurchaseComplete }
                 }}
               >
                 <strong>General</strong>
-                <span>Laterales y parte posterior</span>
+                <span>Sides and rear area</span>
               </button>
             </div>
 
-            <div className="seat-legend" aria-label="Convenciones de asientos">
-              <span><i className="legend-dot available" /> Disponible</span>
-              <span><i className="legend-dot selected" /> Retenido</span>
-              <span><i className="legend-dot unavailable" /> No disponible</span>
+            <div className="seat-legend" aria-label="Seat legend">
+              <span><i className="legend-dot available" /> Available</span>
+              <span><i className="legend-dot selected" /> Held</span>
+              <span><i className="legend-dot unavailable" /> Unavailable</span>
             </div>
 
             {isLoadingSeats ? (
               <div className="seat-loading">
                 <LoaderCircle size={22} />
-                Cargando asientos
+                Loading seats
               </div>
             ) : (
-              <div className="venue-seat-map" aria-label="Selector de asientos">
+              <div className="venue-seat-map" aria-label="Seat selector">
                 <div className={`venue-plan-canvas ${activeZoneKind}-view`}>
                   <div className="map-green-room">Green room</div>
-                  <div className="map-stage">Escenario principal</div>
-                  <div className="map-screen left">Pantalla</div>
-                  <div className="map-screen right">Pantalla</div>
-                  <div className="map-ramp">Pasarela</div>
+                  <div className="map-stage">Main stage</div>
+                  <div className="map-screen left">Screen</div>
+                  <div className="map-screen right">Screen</div>
+                  <div className="map-ramp">Runway</div>
                   <div className="map-barrier left" />
                   <div className="map-barrier right" />
-                  <div className="map-section-label vip">VIP Central</div>
-                  <div className="map-section-label general-left">General izquierda</div>
-                  <div className="map-section-label general-right">General derecha</div>
-                  <div className="map-section-label general-rear">General posterior</div>
-                  <div className="map-service-label north">Ingreso norte</div>
-                  <div className="map-service-label south">Ingreso sur</div>
+                  <div className="map-section-label vip">Central VIP</div>
+                  <div className="map-section-label general-left">Left General</div>
+                  <div className="map-section-label general-right">Right General</div>
+                  <div className="map-section-label general-rear">Rear General</div>
+                  <div className="map-service-label north">North entry</div>
+                  <div className="map-service-label south">South entry</div>
 
                   {visibleVenueSeats.map(({ seat, x, y, zoneKind, section }) => {
                     const seatId = String(seat.id);
@@ -462,14 +462,14 @@ export default function CheckoutPage({ event, user, onBack, onPurchaseComplete }
                         onClick={() => toggleSeat(seat)}
                         disabled={!isAvailable || isCreatingOrder}
                         title={`${section} - ${seat.seatNumber}`}
-                        aria-label={`${section}, asiento ${seat.seatNumber} ${isAvailable ? 'disponible' : 'no disponible'}`}
+                        aria-label={`${section}, seat ${seat.seatNumber} ${isAvailable ? 'available' : 'unavailable'}`}
                       >
                         {seatNumber}
                       </button>
                     );
                   })}
                   {visibleVenueSeats.length === 0 && (
-                    <div className="seat-empty">No hay asientos configurados para esta zona.</div>
+                    <div className="seat-empty">No seats are configured for this zone.</div>
                   )}
                 </div>
               </div>
@@ -477,13 +477,13 @@ export default function CheckoutPage({ event, user, onBack, onPurchaseComplete }
 
             <div className="seat-limit-note">
               <Ticket size={16} />
-              Puedes seleccionar hasta 6 asientos por compra.
+              You can select up to 6 seats per purchase.
             </div>
           </div>
 
           <div className="selected-seat-strip">
             {selectedSeats.length === 0 ? (
-              <span>Selecciona uno o mas asientos del mapa.</span>
+              <span>Select one or more seats from the map.</span>
             ) : (
               selectedSeats.map((seat) => (
                 <strong key={seat.id}>{seat.seatNumber}</strong>
@@ -495,16 +495,16 @@ export default function CheckoutPage({ event, user, onBack, onPurchaseComplete }
         <aside className="order-summary">
           <h2>Resumen</h2>
           <div className="summary-line">
-            <span>Evento</span>
+            <span>Event</span>
             <strong>{event.title}</strong>
           </div>
           <div className="summary-line">
-            <span>Zona</span>
+            <span>Zone</span>
             <strong>{selectedZone?.name}</strong>
           </div>
           <div className="summary-line">
-            <span>Asientos</span>
-            <strong>{selectedSeats.length || 'Sin seleccionar'}</strong>
+            <span>Seats</span>
+            <strong>{selectedSeats.length || 'Not selected'}</strong>
           </div>
           <div className="summary-seat-list">
             {selectedSeats.map((seat) => (
@@ -517,7 +517,7 @@ export default function CheckoutPage({ event, user, onBack, onPurchaseComplete }
           {selectedSeats.length > 0 && (
             <div className="hold-timer">
               <LockKeyhole size={16} />
-              <span>Retencion activa</span>
+              <span>Active hold</span>
               <strong>{holdSeconds}s</strong>
             </div>
           )}
@@ -530,18 +530,18 @@ export default function CheckoutPage({ event, user, onBack, onPurchaseComplete }
             <div className="payment-panel">
               <div className="payment-panel-head">
                 <CreditCard size={18} />
-                <strong>Tarjeta de pago</strong>
+                <strong>Payment card</strong>
               </div>
               <label>
-                Nombre en la tarjeta
+                Name on card
                 <input
                   value={cardForm.holder}
                   onChange={(event) => handleCardChange('holder', event.target.value)}
-                  placeholder="Nombre completo"
+                  placeholder="Full name"
                 />
               </label>
               <label>
-                Numero de tarjeta
+                Card number
                 <input
                   inputMode="numeric"
                   value={cardForm.number}
@@ -551,7 +551,7 @@ export default function CheckoutPage({ event, user, onBack, onPurchaseComplete }
               </label>
               <div className="payment-inline-fields">
                 <label>
-                  Vence
+                  Expires
                   <input
                     inputMode="numeric"
                     value={cardForm.expiry}
@@ -583,7 +583,7 @@ export default function CheckoutPage({ event, user, onBack, onPurchaseComplete }
               disabled={selectedSeats.length === 0 || isCreatingOrder || !paymentReady}
               onClick={createOrder}
             >
-              {isCreatingOrder ? 'Procesando...' : 'Pagar y generar QR'}
+              {isCreatingOrder ? 'Processing...' : 'Pay and generate QR'}
             </button>
           ) : (
             <button
@@ -591,10 +591,10 @@ export default function CheckoutPage({ event, user, onBack, onPurchaseComplete }
               disabled={selectedSeats.length === 0}
               onClick={continueToPayment}
             >
-              Continuar al pago
+              Continue to payment
             </button>
           )}
-          <p className="secure-note"><ShieldCheck size={16} /> Compra asociada a tu cuenta OrbiX.</p>
+          <p className="secure-note"><ShieldCheck size={16} /> Purchase linked to your OrbiX account.</p>
         </aside>
       </div>
     </section>

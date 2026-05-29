@@ -1,12 +1,12 @@
 export const categories = [
-  'Todos',
-  'Conciertos',
-  'Cine',
-  'Teatro',
-  'Deportes',
-  'Familia',
-  'Experiencias',
-  'Eventos'
+  'All',
+  'Concerts',
+  'Movies',
+  'Theater',
+  'Sports',
+  'Family',
+  'Experiences',
+  'Events'
 ];
 
 export const cities = ['Medellin', 'Bogota', 'Cali', 'Barranquilla', 'Cartagena'];
@@ -15,7 +15,7 @@ export const events = [
   {
     id: 'evt-001',
     title: 'Noche Andromeda Live',
-    category: 'Conciertos',
+    category: 'Concerts',
     city: 'Medellin',
     venue: 'Movistar Arena Medellin',
     address: 'Carrera 48 # 10-45',
@@ -24,7 +24,7 @@ export const events = [
     priceFrom: 85000,
     featured: true,
     image: 'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=1400&q=80',
-    description: 'Una noche de musica urbana, luces inmersivas y artistas invitados para abrir temporada.',
+    description: 'A night of urban music, immersive lights, and guest artists to open the season.',
     zones: [
       { id: 'vip', name: 'VIP', price: 180000, available: 42 },
       { id: 'preferente', name: 'Preferente', price: 125000, available: 84 },
@@ -33,8 +33,8 @@ export const events = [
   },
   {
     id: 'evt-002',
-    title: 'Teatro en la Ciudad',
-    category: 'Teatro',
+    title: 'Theater in the City',
+    category: 'Theater',
     city: 'Bogota',
     venue: 'Teatro Central',
     address: 'Calle 45 # 18-22',
@@ -43,17 +43,17 @@ export const events = [
     priceFrom: 55000,
     featured: true,
     image: 'https://images.unsplash.com/photo-1503095396549-807759245b35?auto=format&fit=crop&w=1400&q=80',
-    description: 'Una obra contemporanea sobre memoria, familia y decisiones que cambian una vida.',
+    description: 'A contemporary play about memory, family, and decisions that change a life.',
     zones: [
-      { id: 'platea', name: 'Platea', price: 95000, available: 28 },
-      { id: 'balcon', name: 'Balcon', price: 70000, available: 64 },
+      { id: 'platea', name: 'Orchestra', price: 95000, available: 28 },
+      { id: 'balcon', name: 'Balcony', price: 70000, available: 64 },
       { id: 'general', name: 'General', price: 55000, available: 110 }
     ]
   },
   {
     id: 'evt-003',
     title: 'Final Urbana 2026',
-    category: 'Deportes',
+    category: 'Sports',
     city: 'Medellin',
     venue: 'Estadio Metropolitano',
     address: 'Av. Regional # 70-10',
@@ -62,17 +62,17 @@ export const events = [
     priceFrom: 45000,
     featured: false,
     image: 'https://images.unsplash.com/photo-1518604666860-9ed391f76460?auto=format&fit=crop&w=1400&q=80',
-    description: 'La gran final local con tribunas llenas, experiencia familiar y zonas preferenciales.',
+    description: 'The big local final with packed stands, family experience, and preferred zones.',
     zones: [
-      { id: 'occidental', name: 'Occidental', price: 110000, available: 90 },
-      { id: 'oriental', name: 'Oriental', price: 75000, available: 130 },
-      { id: 'norte', name: 'Norte', price: 45000, available: 240 }
+      { id: 'occidental', name: 'West', price: 110000, available: 90 },
+      { id: 'oriental', name: 'East', price: 75000, available: 130 },
+      { id: 'norte', name: 'North', price: 45000, available: 240 }
     ]
   },
   {
     id: 'evt-004',
     title: 'Festival Familiar Orbital',
-    category: 'Familia',
+    category: 'Family',
     city: 'Cali',
     venue: 'Parque Cultural',
     address: 'Av. 3 Norte # 12-30',
@@ -81,17 +81,17 @@ export const events = [
     priceFrom: 30000,
     featured: false,
     image: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?auto=format&fit=crop&w=1400&q=80',
-    description: 'Shows, talleres creativos, gastronomia y experiencias para todas las edades.',
+    description: 'Shows, creative workshops, food, and experiences for all ages.',
     zones: [
-      { id: 'familiar', name: 'Familiar', price: 70000, available: 50 },
-      { id: 'adulto', name: 'Adulto', price: 45000, available: 160 },
-      { id: 'nino', name: 'Nino', price: 30000, available: 140 }
+      { id: 'familiar', name: 'Family', price: 70000, available: 50 },
+      { id: 'adulto', name: 'Adult', price: 45000, available: 160 },
+      { id: 'nino', name: 'Child', price: 30000, available: 140 }
     ]
   },
   {
     id: 'evt-005',
     title: 'Museo Nocturno',
-    category: 'Experiencias',
+    category: 'Experiences',
     city: 'Cartagena',
     venue: 'Centro Historico',
     address: 'Plaza Mayor # 4-12',
@@ -100,10 +100,10 @@ export const events = [
     priceFrom: 65000,
     featured: false,
     image: 'https://images.unsplash.com/photo-1518998053901-5348d3961a04?auto=format&fit=crop&w=1400&q=80',
-    description: 'Recorrido guiado con arte, musica y narrativas urbanas en una noche especial.',
+    description: 'Guided tour with art, music, and urban storytelling on a special night.',
     zones: [
       { id: 'premium', name: 'Premium', price: 120000, available: 24 },
-      { id: 'ruta', name: 'Ruta guiada', price: 65000, available: 78 }
+      { id: 'ruta', name: 'Guided route', price: 65000, available: 78 }
     ]
   }
 ];
@@ -116,6 +116,6 @@ export const venues = [
 ];
 
 export const purchases = [
-  { id: 'ORD-1024', event: 'Noche Andromeda Live', date: '2026-06-14', total: 265000, status: 'Confirmada' },
-  { id: 'ORD-1019', event: 'Teatro en la Ciudad', date: '2026-06-18', total: 140000, status: 'Pendiente' }
+  { id: 'ORD-1024', event: 'Noche Andromeda Live', date: '2026-06-14', total: 265000, status: 'Confirmed' },
+  { id: 'ORD-1019', event: 'Theater in the City', date: '2026-06-18', total: 140000, status: 'Pending' }
 ];

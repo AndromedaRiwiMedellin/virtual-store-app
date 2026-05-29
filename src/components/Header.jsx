@@ -4,13 +4,13 @@ const orbixLogo = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAaQAAAEYCAYAAAA
 
 export default function Header({ activeView, isAuthenticated, onLogout, onNavigate }) {
   const publicItems = [
-    { id: 'home', label: 'Eventos' },
+    { id: 'home', label: 'Events' },
     { id: 'pqrs', label: 'PQRS' }
   ];
 
   const privateItems = [
-    { id: 'favorites', label: 'Favoritos' },
-    { id: 'history', label: 'Compras' }
+    { id: 'favorites', label: 'Favorites' },
+    { id: 'history', label: 'Purchases' }
   ];
 
   const navItems = isAuthenticated ? [...publicItems, ...privateItems] : publicItems;
@@ -18,15 +18,15 @@ export default function Header({ activeView, isAuthenticated, onLogout, onNaviga
   return (
     <header className="site-header">
       <div className="header-topline">
-        <button className="brand" onClick={() => onNavigate('home')} aria-label="Ir al inicio">
+        <button className="brand" onClick={() => onNavigate('home')} aria-label="Go home">
           <img className="brand-logo" src={orbixLogo} alt="OrbiX" />
           <span>
             <strong>OrbiX</strong>
-            <small>El centro de tus eventos</small>
+            <small>Your events hub</small>
           </span>
         </button>
 
-        <nav className="desktop-nav" aria-label="Principal">
+        <nav className="desktop-nav" aria-label="Main">
           {navItems.map((item) => (
             <button
               key={item.id}
@@ -41,10 +41,10 @@ export default function Header({ activeView, isAuthenticated, onLogout, onNaviga
         <div className="header-actions">
           {isAuthenticated && (
             <>
-              <button className="icon-button" aria-label="Ver favoritos" onClick={() => onNavigate('favorites')}>
+              <button className="icon-button" aria-label="View favorites" onClick={() => onNavigate('favorites')}>
                 <Heart size={18} />
               </button>
-              <button className="icon-button" aria-label="Ver compras" onClick={() => onNavigate('history')}>
+              <button className="icon-button" aria-label="View purchases" onClick={() => onNavigate('history')}>
                 <ShoppingBag size={18} />
               </button>
             </>
@@ -54,14 +54,14 @@ export default function Header({ activeView, isAuthenticated, onLogout, onNaviga
             onClick={() => onNavigate(isAuthenticated ? 'profile' : 'login')}
           >
             {isAuthenticated ? <UserRound size={18} /> : <LogIn size={18} />}
-            <span>{isAuthenticated ? 'Mi perfil' : 'Ingresar'}</span>
+            <span>{isAuthenticated ? 'My profile' : 'Sign in'}</span>
           </button>
           {isAuthenticated && (
-            <button className="icon-button" aria-label="Cerrar sesion" onClick={onLogout} title="Cerrar sesion">
+            <button className="icon-button" aria-label="Sign out" onClick={onLogout} title="Sign out">
               <LogOut size={18} />
             </button>
           )}
-          <button className="icon-button mobile-only" aria-label="Abrir menu">
+          <button className="icon-button mobile-only" aria-label="Open menu">
             <Menu size={20} />
           </button>
         </div>
@@ -69,17 +69,17 @@ export default function Header({ activeView, isAuthenticated, onLogout, onNaviga
 
       <div className="hero-band">
         <div className="hero-copy">
-          <span className="eyebrow">Cartelera oficial</span>
-          <h1>Eventos, experiencias y entradas en un solo lugar.</h1>
+          <span className="eyebrow">Official lineup</span>
+          <h1>Events, experiences, and tickets in one place.</h1>
           <p>
-            Encuentra la mejor fecha, revisa disponibilidad por zona y avanza a compra
-            con una experiencia clara para usuarios reales.
+            Find the best date, check availability by zone, and complete your purchase
+            through a clear experience built for real users.
           </p>
         </div>
-        <div className="hero-panel" aria-label="Resumen de disponibilidad">
+        <div className="hero-panel" aria-label="Availability summary">
           <CalendarDays size={22} />
-          <strong>Proximos 30 dias</strong>
-          <span>5 ciudades activas</span>
+          <strong>Next 30 days</strong>
+          <span>5 active cities</span>
         </div>
       </div>
     </header>

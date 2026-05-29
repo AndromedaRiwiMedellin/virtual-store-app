@@ -12,9 +12,9 @@ export default function DigitalTicketPage({ purchase, onBack }) {
   if (!purchase || tickets.length === 0) {
     return (
       <section className="empty-state">
-        <h2>No hay boleta seleccionada.</h2>
-        <p>Cuando completes una compra, la boleta digital aparecera aqui.</p>
-        <button className="primary-button" onClick={onBack}>Volver</button>
+        <h2>No ticket selected.</h2>
+        <p>Once you complete a purchase, the digital ticket will appear here.</p>
+        <button className="primary-button" onClick={onBack}>Back</button>
       </section>
     );
   }
@@ -23,18 +23,18 @@ export default function DigitalTicketPage({ purchase, onBack }) {
     <section className="digital-ticket-page">
       <button className="ghost-button" onClick={onBack}>
         <ArrowLeft size={18} />
-        Volver
+        Back
       </button>
 
       <div className="ticket-hero">
         <div>
-          <span className="event-category">Boleta digital</span>
+          <span className="event-category">Digital ticket</span>
           <h1>{purchase.event.title}</h1>
           <p>{purchase.event.venue} - {formatDate(purchase.event.date)}</p>
         </div>
         <button className="primary-button" onClick={() => window.print()}>
           <Download size={18} />
-          Descargar
+          Download
         </button>
       </div>
 
@@ -43,26 +43,26 @@ export default function DigitalTicketPage({ purchase, onBack }) {
           <div className="ticket-summary-row">
             <CalendarDays size={20} />
             <div>
-              <span>Fecha</span>
+              <span>Date</span>
               <strong>{formatDate(purchase.event.date)}</strong>
             </div>
           </div>
           <div className="ticket-summary-row">
             <Ticket size={20} />
             <div>
-              <span>Zona</span>
+              <span>Zone</span>
               <strong>{purchase.zone.name}</strong>
             </div>
           </div>
           <div className="ticket-summary-row">
             <UserRound size={20} />
             <div>
-              <span>Titular</span>
+              <span>Holder</span>
               <strong>{purchase.user.fullName || purchase.user.email}</strong>
             </div>
           </div>
           <div className="ticket-total-line">
-            <span>Total pagado</span>
+            <span>Total paid</span>
             <strong>{formatCurrency(purchase.total)}</strong>
           </div>
         </article>
@@ -73,13 +73,13 @@ export default function DigitalTicketPage({ purchase, onBack }) {
               <div className="ticket-qr-head">
                 <QrCode size={20} />
                 <div>
-                  <span>Entrada {index + 1}</span>
-                  <strong>Asiento {ticket.seatNumber}</strong>
+                  <span>Ticket {index + 1}</span>
+                  <strong>Seat {ticket.seatNumber}</strong>
                 </div>
               </div>
-              <img src={qrImageUrl(ticket.qrCode)} alt={`QR de boleta ${ticket.seatNumber}`} />
+              <img src={qrImageUrl(ticket.qrCode)} alt={`Ticket QR ${ticket.seatNumber}`} />
               <div className="ticket-code">
-                <span>Codigo</span>
+                <span>Code</span>
                 <strong>{ticket.qrCode}</strong>
               </div>
               <em>{ticket.status ?? 'valid'}</em>
