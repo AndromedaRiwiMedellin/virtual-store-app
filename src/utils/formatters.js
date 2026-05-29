@@ -8,7 +8,7 @@ export function formatCurrency(value) {
 
 export function formatDate(dateValue) {
   const date = new Date(`${dateValue}T12:00:00`);
-  return new Intl.DateTimeFormat('es-CO', {
+  return new Intl.DateTimeFormat('en-US', {
     day: '2-digit',
     month: 'short',
     year: 'numeric'
@@ -18,7 +18,7 @@ export function formatDate(dateValue) {
 export function getDateParts(dateValue) {
   const date = new Date(`${dateValue}T12:00:00`);
   return {
-    day: new Intl.DateTimeFormat('es-CO', { day: '2-digit' }).format(date),
-    month: new Intl.DateTimeFormat('es-CO', { month: 'short' }).format(date).replace('.', '')
+    day: new Intl.DateTimeFormat('en-US', { day: '2-digit' }).format(date),
+    month: new Intl.DateTimeFormat('en-US', { month: 'short' }).format(date).replace('.', '')
   };
 }

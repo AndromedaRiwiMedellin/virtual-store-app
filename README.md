@@ -1,6 +1,6 @@
 # OrbiX Frontend
 
-Frontend de OrbiX construido con React y Vite. La aplicacion consume la API de Andromeda para mostrar eventos, autenticar usuarios, consultar disponibilidad, comprar entradas, generar QR digital y gestionar PQRS.
+OrbiX frontend built with React and Vite. The application consumes the Andromeda API to show events, authenticate users, check availability, buy tickets, generate digital QR codes, and manage PQRS.
 
 ## Estructura
 
@@ -50,7 +50,7 @@ npm run build
 
 ## Docker
 
-Desde la raiz del repositorio:
+From the repository root:
 
 ```powershell
 docker compose up --build

@@ -3,11 +3,11 @@ import { formatCurrency, getDateParts } from '../utils/formatters.js';
 
 export default function EventCard({ event, onOpen, isFeatured = false }) {
   const dateParts = getDateParts(event.date);
-  const priceLabel = event.priceFrom > 0 ? `Desde ${formatCurrency(event.priceFrom)}` : 'Precio por confirmar';
+  const priceLabel = event.priceFrom > 0 ? `From ${formatCurrency(event.priceFrom)}` : 'Price to be confirmed';
 
   return (
     <article className={isFeatured ? 'event-card featured' : 'event-card'}>
-      <button className="favorite-dot" aria-label="Agregar a favoritos">
+      <button className="favorite-dot" aria-label="Add to favorites">
         <Heart size={17} />
       </button>
       <div className="event-media" style={{ backgroundImage: `url(${event.image})` }}>
@@ -22,7 +22,7 @@ export default function EventCard({ event, onOpen, isFeatured = false }) {
         <p><MapPin size={15} /> {event.venue}, {event.city}</p>
         <div className="event-footer">
           <span>{priceLabel}</span>
-          <button onClick={() => onOpen(event.id)} aria-label={`Ver detalle de ${event.title}`}>
+          <button onClick={() => onOpen(event.id)} aria-label={`View details for ${event.title}`}>
             <ArrowUpRight size={18} />
           </button>
         </div>

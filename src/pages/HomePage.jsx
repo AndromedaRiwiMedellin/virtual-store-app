@@ -11,8 +11,8 @@ export default function HomePage({ events, filters, isLoading, onFiltersChange, 
       || event.venue.toLowerCase().includes(query)
       || event.city.toLowerCase().includes(query)
       || event.category.toLowerCase().includes(query);
-    const matchesCategory = filters.category === 'Todos' || event.category === filters.category;
-    const matchesCity = filters.city === 'Todas' || event.city === filters.city;
+    const matchesCategory = filters.category === 'All' || event.category === filters.category;
+    const matchesCity = filters.city === 'All' || event.city === filters.city;
     const matchesDate = !filters.date || event.date === filters.date;
     return matchesQuery && matchesCategory && matchesCity && matchesDate;
   });
@@ -30,26 +30,26 @@ export default function HomePage({ events, filters, isLoading, onFiltersChange, 
 
       {isLoading ? (
         <section className="empty-state">
-          <h2>Cargando eventos.</h2>
-          <p>Estamos preparando la cartelera para ti.</p>
+          <h2>Loading events.</h2>
+          <p>We are preparing the lineup for you.</p>
         </section>
       ) : filteredEvents.length === 0 ? (
         <section className="empty-state">
-          <h2>No encontramos eventos con esos filtros.</h2>
-          <p>Prueba con otra ciudad, categoria o fecha para ver disponibilidad.</p>
+          <h2>No events match those filters.</h2>
+          <p>Try another city, category, or date to check availability.</p>
         </section>
       ) : (
         <>
           <EventSection
-            title="Eventos destacados"
-            subtitle="Alta demanda"
+            title="Featured events"
+            subtitle="High demand"
             events={featuredEvents.length ? featuredEvents : filteredEvents.slice(0, 2)}
             onOpen={onOpenEvent}
             featured
           />
           <EventSection
-            title="Cartelera disponible"
-            subtitle="Venta activa"
+            title="Available lineup"
+            subtitle="On sale"
             events={regularEvents.length ? regularEvents : filteredEvents.slice(2)}
             onOpen={onOpenEvent}
           />

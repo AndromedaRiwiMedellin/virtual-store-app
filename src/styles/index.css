@@ -1103,7 +1103,7 @@ button {
 }
 
 .venue-sections::before {
-  content: "Pasarela central";
+  content: "Central runway";
   position: absolute;
   top: 0;
   bottom: 0;

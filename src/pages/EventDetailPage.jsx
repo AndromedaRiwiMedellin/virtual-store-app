@@ -5,19 +5,19 @@ export default function EventDetailPage({ event, onBack, onCheckout }) {
   if (!event) {
     return (
       <section className="empty-state">
-        <h2>Evento no encontrado</h2>
-        <button onClick={onBack}>Volver a eventos</button>
+        <h2>Event not found</h2>
+        <button onClick={onBack}>Back to events</button>
       </section>
     );
   }
 
-  const priceLabel = event.priceFrom > 0 ? `Desde ${formatCurrency(event.priceFrom)}` : 'Precio por confirmar';
+  const priceLabel = event.priceFrom > 0 ? `From ${formatCurrency(event.priceFrom)}` : 'Price to be confirmed';
 
   return (
     <section className="detail-layout">
       <button className="ghost-button" onClick={onBack}>
         <ArrowLeft size={18} />
-        Volver a la cartelera
+        Back to lineup
       </button>
 
       <article className="detail-hero">
@@ -33,7 +33,7 @@ export default function EventDetailPage({ event, onBack, onCheckout }) {
             <span><Ticket size={18} /> {priceLabel}</span>
           </div>
           <button className="primary-button" onClick={() => onCheckout(event.id)}>
-            Seleccionar entradas
+            Select tickets
           </button>
         </div>
       </article>
@@ -41,8 +41,8 @@ export default function EventDetailPage({ event, onBack, onCheckout }) {
       <section className="zones-panel">
         <div className="section-heading compact">
           <div>
-            <span>Disponibilidad</span>
-            <h2>Zonas y precios</h2>
+            <span>Availability</span>
+            <h2>Zones and prices</h2>
           </div>
         </div>
         <div className="zone-list">
@@ -50,7 +50,7 @@ export default function EventDetailPage({ event, onBack, onCheckout }) {
             <article key={zone.id} className="zone-item">
               <div>
                 <strong>{zone.name}</strong>
-                <span>{zone.available} cupos disponibles</span>
+                <span>{zone.available} spots available</span>
               </div>
               <b>{formatCurrency(zone.price)}</b>
             </article>

@@ -6,7 +6,7 @@ const fallbackImages = {
   teatro: 'https://images.unsplash.com/photo-1503095396549-807759245b35?auto=format&fit=crop&w=1400&q=80',
   concierto: 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&w=1400&q=80',
   rock: 'https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?auto=format&fit=crop&w=1400&q=80',
-  electronico: 'https://images.unsplash.com/photo-1571266028243-d220c9c3b469?auto=format&fit=crop&w=1400&q=80',
+  electronic: 'https://images.unsplash.com/photo-1571266028243-d220c9c3b469?auto=format&fit=crop&w=1400&q=80',
   gastronomico: 'https://images.unsplash.com/photo-1555244162-803834f70033?auto=format&fit=crop&w=1400&q=80',
   default: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1400&q=80'
 };
@@ -21,7 +21,7 @@ async function request(path, options = {}) {
   });
 
   if (!response.ok) {
-    let message = 'No se pudo completar la solicitud.';
+    let message = 'The request could not be completed.';
     try {
       const error = await response.json();
       message = error.detail ?? error.message ?? error.title ?? message;
@@ -39,12 +39,12 @@ async function request(path, options = {}) {
 
 function getFallbackImage(title = '', category = '') {
   const text = `${title} ${category}`.toLowerCase();
-  if (text.includes('cine')) return fallbackImages.cine;
-  if (text.includes('teatro') || text.includes('romeo')) return fallbackImages.teatro;
+  if (text.includes('cine') || text.includes('movie') || text.includes('film')) return fallbackImages.cine;
+  if (text.includes('teatro') || text.includes('theater') || text.includes('theatre') || text.includes('romeo')) return fallbackImages.teatro;
   if (text.includes('rock')) return fallbackImages.rock;
-  if (text.includes('electron')) return fallbackImages.electronico;
-  if (text.includes('gastronom')) return fallbackImages.gastronomico;
-  if (text.includes('concierto') || text.includes('festival')) return fallbackImages.concierto;
+  if (text.includes('electron')) return fallbackImages.electronic;
+  if (text.includes('gastronom') || text.includes('food')) return fallbackImages.gastronomico;
+  if (text.includes('concierto') || text.includes('concert') || text.includes('festival')) return fallbackImages.concierto;
   return fallbackImages.default;
 }
 
@@ -60,20 +60,20 @@ function toAbsoluteImage(posterUrl, title = '', category = '') {
 
 function inferCategory(event) {
   const text = `${event.title ?? ''} ${event.description ?? ''}`.toLowerCase();
-  if (text.includes('cine') || text.includes('pelicula') || text.includes('proyeccion')) return 'Cine';
-  if (text.includes('teatro') || text.includes('obra') || text.includes('romeo')) return 'Teatro';
-  if (text.includes('concierto') || text.includes('rock') || text.includes('dj') || text.includes('electron')) return 'Conciertos';
-  if (text.includes('gastronom') || text.includes('parque') || text.includes('urbana')) return 'Experiencias';
-  return 'Eventos';
+  if (text.includes('cine') || text.includes('pelicula') || text.includes('movie') || text.includes('film') || text.includes('proyeccion')) return 'Movies';
+  if (text.includes('teatro') || text.includes('theater') || text.includes('theatre') || text.includes('obra') || text.includes('romeo')) return 'Theater';
+  if (text.includes('concierto') || text.includes('concert') || text.includes('rock') || text.includes('dj') || text.includes('electron')) return 'Concerts';
+  if (text.includes('gastronom') || text.includes('food') || text.includes('parque') || text.includes('urbana')) return 'Experiences';
+  return 'Events';
 }
 
 function inferVenue(event) {
   const category = inferCategory(event);
-  if (category === 'Cine') return 'Escenario al aire libre';
-  if (category === 'Teatro') return 'Sala principal';
-  if (category === 'Conciertos') return 'Arena OrbiX';
-  if (category === 'Experiencias') return 'Distrito OrbiX';
-  return 'Centro de eventos OrbiX';
+  if (category === 'Movies') return 'Open-air venue';
+  if (category === 'Theater') return 'Main hall';
+  if (category === 'Concerts') return 'OrbiX Arena';
+  if (category === 'Experiences') return 'OrbiX District';
+  return 'OrbiX Event Center';
 }
 
 function normalizeSeat(seat) {
@@ -94,7 +94,7 @@ function getSeatNumberValue(seat) {
 function sortSeats(a, b) {
   const rowA = a.rowLabel ?? '';
   const rowB = b.rowLabel ?? '';
-  if (rowA !== rowB) return rowA.localeCompare(rowB, 'es', { numeric: true });
+  if (rowA !== rowB) return rowA.localeCompare(rowB, 'en', { numeric: true });
   return getSeatNumberValue(a) - getSeatNumberValue(b);
 }
 
@@ -107,7 +107,7 @@ function normalizeZone(area) {
   return {
     id: area.id,
     eventId: area.eventId,
-    name: area.areaName ?? area.sectionName ?? 'Zona',
+    name: area.areaName ?? area.sectionName ?? 'Zone',
     description: area.description ?? '',
     price: Number(area.price ?? 0),
     capacity: area.capacity ?? seats.length,
@@ -129,13 +129,13 @@ export function normalizeEvent(payload, index = 0) {
 
   return {
     id: event.id,
-    title: event.title ?? 'Evento OrbiX',
-    description: event.description ?? 'Experiencia disponible en nuestra cartelera.',
+    title: event.title ?? 'OrbiX Event',
+    description: event.description ?? 'Experience available in our lineup.',
     image: toAbsoluteImage(event.posterUrl, event.title, category),
     date,
     time: eventDate && !Number.isNaN(eventDate.getTime())
-      ? eventDate.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' })
-      : 'Por confirmar',
+      ? eventDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+      : 'To be confirmed',
     city: 'Medellin',
     venue: inferVenue(event),
     category,
@@ -151,8 +151,8 @@ export function normalizeEvent(payload, index = 0) {
 export function getEvents(filters = {}) {
   const params = new URLSearchParams();
   if (filters.query) params.set('query', filters.query);
-  if (filters.category && filters.category !== 'Todos') params.set('category', filters.category);
-  if (filters.city && filters.city !== 'Todas') params.set('city', filters.city);
+  if (filters.category && filters.category !== 'All') params.set('category', filters.category);
+  if (filters.city && filters.city !== 'All') params.set('city', filters.city);
   return request(`/events${params.toString() ? `?${params}` : ''}`)
     .then(async (events) => {
       const normalizedEvents = events.map((event, index) => normalizeEvent(event, index));
@@ -212,18 +212,18 @@ function normalizePurchase(purchase, user) {
     id: purchase.id,
     event: {
       id: purchase.event?.id,
-      title: purchase.event?.title ?? 'Evento OrbiX',
+      title: purchase.event?.title ?? 'OrbiX Event',
       date,
       time: eventDate && !Number.isNaN(eventDate.getTime())
-        ? eventDate.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' })
-        : 'Por confirmar',
+        ? eventDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+        : 'To be confirmed',
       venue: inferVenue(purchase.event ?? {}),
       category: inferCategory(purchase.event ?? {}),
       image: toAbsoluteImage(purchase.event?.image, purchase.event?.title)
     },
     zone: {
       id: purchase.zone?.id,
-      name: purchase.zone?.name ?? 'Zona',
+      name: purchase.zone?.name ?? 'Zone',
       price: Number(purchase.zone?.price ?? 0)
     },
     seats: (purchase.tickets ?? []).map((ticket) => ({
@@ -232,7 +232,7 @@ function normalizePurchase(purchase, user) {
     })),
     tickets: purchase.tickets ?? [],
     total: Number(purchase.total ?? 0),
-    status: purchase.status ?? 'Pagado',
+    status: purchase.status ?? 'Paid',
     purchasedAt: purchase.purchasedAt,
     user: {
       id: user?.id,

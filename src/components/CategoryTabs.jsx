@@ -2,7 +2,7 @@ import { categories } from '../data/events.js';
 
 export default function CategoryTabs({ activeCategory, onSelect }) {
   return (
-    <div className="category-tabs" aria-label="Categorias de eventos">
+    <div className="category-tabs" aria-label="Event categories">
       {categories.map((category) => (
         <button
           key={category}
