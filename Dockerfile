@@ -1,6 +1,7 @@
 FROM node:22-alpine AS build
 WORKDIR /app
-ARG VITE_API_BASE_URL=/api
+# Default VITE_API_BASE_URL points to the production VPS backend
+ARG VITE_API_BASE_URL=https://204.168.212.239
 ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
 
 COPY package*.json ./

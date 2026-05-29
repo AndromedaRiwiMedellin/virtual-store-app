@@ -26,7 +26,8 @@ Crear un archivo `.env` en la raiz tomando como base `.env.example`.
 
 ```env
 FRONT_PORT=5173
-VITE_API_BASE_URL=/api
+# By default the frontend will call the production VPS backend
+VITE_API_BASE_URL=https://204.168.212.239
 ```
 
 ## Desarrollo Local
@@ -59,6 +60,8 @@ docker compose up --build
 O construyendo solo la imagen:
 
 ```powershell
-docker build -t virtual-store-front --build-arg VITE_API_BASE_URL=/api .
+docker build -t virtual-store-front --build-arg VITE_API_BASE_URL=https://204.168.212.239 .
 docker run --rm -p 5173:80 virtual-store-front
 ```
+
+If you prefer to proxy through a local nginx and keep using `/api`, set `VITE_API_BASE_URL=/api` when building the image.
