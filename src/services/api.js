@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:5000/api";
+const BASE_URL = "https://service.andromeda.andrescortes.dev";
 
 // 1. Función de Inicio de Sesión (Login)
 export async function login(email, password) {
