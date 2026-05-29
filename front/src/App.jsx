@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Header from './components/Header.jsx';
 import { events as fallbackEvents } from './data/events.js';
 import CheckoutPage from './pages/CheckoutPage.jsx';
+import DigitalTicketPage from './pages/DigitalTicketPage.jsx';
 import EventDetailPage from './pages/EventDetailPage.jsx';
 import FavoritesPage from './pages/FavoritesPage.jsx';
 import HistoryPage from './pages/HistoryPage.jsx';
@@ -10,6 +11,7 @@ import LoginPage from './pages/LoginPage.jsx';
 import PqrsPage from './pages/PqrsPage.jsx';
 import ProfilePage from './pages/ProfilePage.jsx';
 import { getEvent, getEvents } from './services/eventsApi.js';
+import { addStoredPurchase } from './services/ticketStorage.js';
 
 function getStoredUser() {
   try {
@@ -34,6 +36,7 @@ export default function App() {
   const [events, setEvents] = useState(fallbackEvents);
   const [selectedEventId, setSelectedEventId] = useState(fallbackEvents[0].id);
   const [selectedEvent, setSelectedEvent] = useState(fallbackEvents[0]);
+  const [activePurchase, setActivePurchase] = useState(null);
   const [isLoadingEvents, setIsLoadingEvents] = useState(true);
 
   const isAuthenticated = Boolean(user?.id || user?.email);
@@ -86,7 +89,7 @@ export default function App() {
   };
 
   const navigate = (nextView) => {
-    const privateViews = ['profile', 'history', 'favorites', 'checkout'];
+    const privateViews = ['profile', 'history', 'favorites', 'checkout', 'ticket'];
     if (!isAuthenticated && privateViews.includes(nextView)) {
       setAuthReason('Ingresa a tu cuenta para ver esta seccion de forma segura.');
       setView('login');
@@ -95,6 +98,13 @@ export default function App() {
     }
 
     setView(nextView);
+  };
+
+  const handlePurchaseComplete = (purchase) => {
+    const storedPurchase = addStoredPurchase(purchase);
+    setActivePurchase(storedPurchase);
+    setView('ticket');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const openEvent = async (eventId) => {
@@ -151,13 +161,37 @@ export default function App() {
           <EventDetailPage event={currentSelectedEvent} onBack={() => navigate('home')} onCheckout={goToCheckout} />
         )}
         {view === 'checkout' && (
-          <CheckoutPage event={currentSelectedEvent} user={user} onBack={() => navigate('detail')} />
+          <CheckoutPage
+            event={currentSelectedEvent}
+            user={user}
+            onBack={() => navigate('detail')}
+            onPurchaseComplete={handlePurchaseComplete}
+          />
         )}
-        {view === 'profile' && <ProfilePage user={user} />}
-        {view === 'history' && <HistoryPage />}
+        {view === 'profile' && (
+          <ProfilePage
+            user={user}
+            onOpenPurchase={(purchase) => {
+              setActivePurchase(purchase);
+              setView('ticket');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          />
+        )}
+        {view === 'history' && (
+          <HistoryPage
+            user={user}
+            onOpenPurchase={(purchase) => {
+              setActivePurchase(purchase);
+              setView('ticket');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          />
+        )}
         {view === 'favorites' && <FavoritesPage events={events} onOpenEvent={openEvent} />}
         {view === 'pqrs' && <PqrsPage />}
         {view === 'login' && <LoginPage reason={authReason} onAuthenticated={handleAuthSuccess} />}
+        {view === 'ticket' && <DigitalTicketPage purchase={activePurchase} onBack={() => navigate('history')} />}
       </main>
     </div>
   );

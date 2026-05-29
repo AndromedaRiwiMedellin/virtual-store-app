@@ -42,7 +42,7 @@ export default defineConfig({
         navigateFallback: '/',
         runtimeCaching: [
           {
-            urlPattern: ({ url }) => url.origin === 'https://service.andromeda.andrescortes.dev'
+            urlPattern: ({ url }) => (url.origin === 'https://service.andromeda.andrescortes.dev' || url.origin === self.location.origin)
               && url.pathname.includes('/events'),
             handler: 'NetworkFirst',
             options: {
@@ -60,7 +60,15 @@ export default defineConfig({
   ],
   server: {
     port: 5173,
-    strictPort: false
+    strictPort: false,
+    proxy: {
+      '/api': {
+        target: 'https://service.andromeda.andrescortes.dev',
+        changeOrigin: true,
+        secure: true,
+        rewrite: (path) => path.replace(/^\/api/, '')
+      }
+    }
   },
   preview: {
     port: 4173

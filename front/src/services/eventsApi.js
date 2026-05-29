@@ -1,4 +1,4 @@
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? 'https://service.andromeda.andrescortes.dev').replace(/\/+$/, '');
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? '/api').replace(/\/+$/, '');
 const MEDIA_BASE_URL = (import.meta.env.VITE_MEDIA_BASE_URL ?? API_BASE_URL).replace(/\/+$/, '');
 
 const fallbackImages = {
@@ -28,7 +28,9 @@ async function request(path, options = {}) {
     } catch {
       message = response.statusText || message;
     }
-    throw new Error(message);
+    const requestError = new Error(message);
+    requestError.status = response.status;
+    throw requestError;
   }
 
   if (response.status === 204) return null;
@@ -84,8 +86,20 @@ function normalizeSeat(seat) {
   };
 }
 
+function getSeatNumberValue(seat) {
+  const value = Number(String(seat.seatNumber ?? '').replace(/[^0-9]/g, ''));
+  return Number.isFinite(value) ? value : 0;
+}
+
+function sortSeats(a, b) {
+  const rowA = a.rowLabel ?? '';
+  const rowB = b.rowLabel ?? '';
+  if (rowA !== rowB) return rowA.localeCompare(rowB, 'es', { numeric: true });
+  return getSeatNumberValue(a) - getSeatNumberValue(b);
+}
+
 function normalizeZone(area) {
-  const seats = (area.areaSeats ?? []).filter(Boolean).map(normalizeSeat);
+  const seats = (area.areaSeats ?? []).filter(Boolean).map(normalizeSeat).sort(sortSeats);
   const available = seats.length
     ? seats.filter((seat) => seat.status?.toLowerCase() === 'available').length
     : area.capacity ?? 0;
@@ -182,6 +196,56 @@ export function lockSeats(areaId, seats) {
     method: 'POST',
     body: JSON.stringify({ seats })
   });
+}
+
+export function getTicket(ticketId) {
+  return request(`/tickets/${ticketId}`);
+}
+
+function normalizePurchase(purchase, user) {
+  const eventDate = purchase.event?.eventDate ? new Date(purchase.event.eventDate) : null;
+  const date = eventDate && !Number.isNaN(eventDate.getTime())
+    ? eventDate.toISOString().slice(0, 10)
+    : '';
+
+  return {
+    id: purchase.id,
+    event: {
+      id: purchase.event?.id,
+      title: purchase.event?.title ?? 'Evento OrbiX',
+      date,
+      time: eventDate && !Number.isNaN(eventDate.getTime())
+        ? eventDate.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' })
+        : 'Por confirmar',
+      venue: inferVenue(purchase.event ?? {}),
+      category: inferCategory(purchase.event ?? {}),
+      image: toAbsoluteImage(purchase.event?.image, purchase.event?.title)
+    },
+    zone: {
+      id: purchase.zone?.id,
+      name: purchase.zone?.name ?? 'Zona',
+      price: Number(purchase.zone?.price ?? 0)
+    },
+    seats: (purchase.tickets ?? []).map((ticket) => ({
+      id: ticket.id,
+      seatNumber: ticket.seatNumber
+    })),
+    tickets: purchase.tickets ?? [],
+    total: Number(purchase.total ?? 0),
+    status: purchase.status ?? 'Pagado',
+    purchasedAt: purchase.purchasedAt,
+    user: {
+      id: user?.id,
+      fullName: user?.fullName,
+      email: user?.email
+    }
+  };
+}
+
+export function getUserPurchases(user) {
+  if (!user?.email) return Promise.resolve([]);
+  return request(`/tickets/purchases?email=${encodeURIComponent(user.email)}`)
+    .then((purchases) => purchases.map((purchase) => normalizePurchase(purchase, user)));
 }
 
 export function purchaseTickets({ user, event, zone, seats }) {
