@@ -1,37 +1,4 @@
 services:
-  postgres:
-    image: postgres:16-alpine
-    container_name: virtual-store-postgres
-    profiles:
-      - localdb
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB:-virtual_store}
-      POSTGRES_USER: ${POSTGRES_USER:-virtual_store_user}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-virtual_store_password}
-    ports:
-      - "${POSTGRES_PORT:-5432}:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-virtual_store_user} -d ${POSTGRES_DB:-virtual_store}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  backend:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: virtual-store-backend
-    restart: unless-stopped
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      ASPNETCORE_URLS: http://+:8080
-      ConnectionStrings__DefaultConnection: Host=${DB_HOST:-postgres};Port=${DB_PORT:-5432};Database=${DB_NAME:-virtual_store};Username=${DB_USER:-virtual_store_user};Password=${DB_PASSWORD:-virtual_store_password}
-    ports:
-      - "${BACKEND_PORT:-8080}:8080"
-
   front:
     build:
       context: ./front
@@ -40,12 +7,5 @@ services:
         VITE_API_BASE_URL: ${VITE_API_BASE_URL:-https://service.andromeda.andrescortes.dev}
     container_name: virtual-store-front
     restart: unless-stopped
-    depends_on:
-      - backend
-    environment:
-      VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8080/api}
     ports:
       - "${FRONT_PORT:-5173}:80"
-
-volumes:
-  postgres_data:

@@ -1,6 +1,6 @@
 # OrbiX Eventos Frontend
 
-Frontend React para la tienda virtual de eventos. Esta carpeta reemplaza la demo anterior y deja una base organizada para conectar con el backend y PostgreSQL.
+Frontend React para la tienda virtual de eventos. La aplicacion consume la API desplegada y mantiene separada la interfaz del resto de servicios de la organizacion.
 
 ## Scripts
 
@@ -21,5 +21,5 @@ docker run --rm -p 5173:80 virtual-store-front
 
 - `src/components`: piezas reutilizables de UI.
 - `src/pages`: vistas principales asociadas a historias de usuario.
-- `src/data`: datos temporales mientras se conecta la API.
+- `src/data`: datos de respaldo para la interfaz.
 - `src/styles`: estilos globales y sistema visual.
