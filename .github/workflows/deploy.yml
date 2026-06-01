@@ -1,0 +1,63 @@
+name: Deploy frontend
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  IMAGE_NAME: ghcr.io/andromedariwimedellin/virtual-store-app
+  VITE_API_BASE_URL: https://service.andromeda.andrescortes.dev
+  VITE_MEDIA_BASE_URL: https://admin.andromeda.andrescortes.dev/storage
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ env.IMAGE_NAME }}:latest
+          build-args: |
+            VITE_API_BASE_URL=${{ env.VITE_API_BASE_URL }}
+            VITE_MEDIA_BASE_URL=${{ env.VITE_MEDIA_BASE_URL }}
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: 204.168.212.239
+          username: root
+          key: ${{ secrets.SSH_KEY }}
+          port: 22
+          script: |
+            docker login ghcr.io -u "${{ github.actor }}" -p "${{ secrets.TOKEN }}"
+            docker pull ${{ env.IMAGE_NAME }}:latest
+            docker stop virtual-store-app || true
+            docker rm virtual-store-app || true
+            docker run -d \
+              --name virtual-store-app \
+              --restart unless-stopped \
+              -p 8084:80 \
+              ${{ env.IMAGE_NAME }}:latest

@@ -21,4 +21,4 @@ jobs:
       - run: npm run build
         env:
           VITE_API_BASE_URL: https://service.andromeda.andrescortes.dev
-          VITE_MEDIA_BASE_URL: https://service.andromeda.andrescortes.dev
+          VITE_MEDIA_BASE_URL: https://admin.andromeda.andrescortes.dev/storage

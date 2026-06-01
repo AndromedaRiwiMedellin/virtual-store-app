@@ -3,7 +3,7 @@ $ErrorActionPreference = 'Stop'
 Set-Location $PSScriptRoot\..
 
 $env:VITE_API_BASE_URL = 'https://service.andromeda.andrescortes.dev'
-$env:VITE_MEDIA_BASE_URL = 'https://service.andromeda.andrescortes.dev'
+$env:VITE_MEDIA_BASE_URL = 'https://admin.andromeda.andrescortes.dev/storage'
 
 if (-not (Test-Path node_modules)) {
   npm install

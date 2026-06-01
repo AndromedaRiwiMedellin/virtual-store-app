@@ -42,7 +42,7 @@ Crear un archivo `.env` en la raiz tomando como base `.env.example`.
 ```env
 FRONT_PORT=5173
 VITE_API_BASE_URL=https://service.andromeda.andrescortes.dev
-VITE_MEDIA_BASE_URL=https://service.andromeda.andrescortes.dev
+VITE_MEDIA_BASE_URL=https://admin.andromeda.andrescortes.dev/storage
 ```
 
 **Desarrollo local** (`npm run dev`, proxy en `vite.config.js`):
@@ -105,3 +105,5 @@ En el servidor, despues de `git pull origin main`:
 ```
 
 No uses `https://204.168.212.239` como API. El build de produccion debe apuntar a `https://service.andromeda.andrescortes.dev`.
+
+Los posters creados desde el panel admin se sirven desde `https://admin.andromeda.andrescortes.dev/storage`, por eso `VITE_MEDIA_BASE_URL` debe apuntar a ese host hasta que la API sirva archivos estaticos propios.
