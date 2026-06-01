@@ -61,3 +61,31 @@ jobs:
               --restart unless-stopped \
               -p 8084:80 \
               ${{ env.IMAGE_NAME }}:latest
+
+            cat > /etc/nginx/sites-available/000-andromeda-frontend.conf <<'NGINX'
+            server {
+              listen 80;
+              server_name andromeda.andrescortes.dev;
+              return 301 https://$host$request_uri;
+            }
+
+            server {
+              listen 443 ssl http2;
+              server_name andromeda.andrescortes.dev;
+
+              ssl_certificate /etc/letsencrypt/live/andromeda.andrescortes.dev/fullchain.pem;
+              ssl_certificate_key /etc/letsencrypt/live/andromeda.andrescortes.dev/privkey.pem;
+
+              location / {
+                proxy_pass http://127.0.0.1:8084;
+                proxy_http_version 1.1;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+              }
+            }
+            NGINX
+            ln -sf /etc/nginx/sites-available/000-andromeda-frontend.conf /etc/nginx/sites-enabled/000-andromeda-frontend.conf
+            nginx -t
+            systemctl reload nginx
