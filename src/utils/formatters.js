@@ -7,7 +7,15 @@ export function formatCurrency(value) {
 }
 
 export function formatDate(dateValue) {
-  const date = new Date(`${dateValue}T12:00:00`);
+  if (!dateValue) return 'To be confirmed';
+
+  const normalizedValue = String(dateValue);
+  const date = normalizedValue.includes('T')
+    ? new Date(normalizedValue)
+    : new Date(`${normalizedValue}T12:00:00`);
+
+  if (Number.isNaN(date.getTime())) return 'To be confirmed';
+
   return new Intl.DateTimeFormat('en-US', {
     day: '2-digit',
     month: 'short',
@@ -16,7 +24,15 @@ export function formatDate(dateValue) {
 }
 
 export function getDateParts(dateValue) {
-  const date = new Date(`${dateValue}T12:00:00`);
+  const normalizedValue = String(dateValue ?? '');
+  const date = normalizedValue.includes('T')
+    ? new Date(normalizedValue)
+    : new Date(`${normalizedValue}T12:00:00`);
+
+  if (Number.isNaN(date.getTime())) {
+    return { day: '--', month: 'TBD' };
+  }
+
   return {
     day: new Intl.DateTimeFormat('en-US', { day: '2-digit' }).format(date),
     month: new Intl.DateTimeFormat('en-US', { month: 'short' }).format(date).replace('.', '')
